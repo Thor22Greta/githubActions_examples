@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16, 18, 20] # Se ejecutará en las tres versiones
+        node-version: [16, 18, 20]
 
     steps:
       - name: Checkout code
@@ -36,18 +36,9 @@ jobs:
   test-execution:
     runs-on: ubuntu-latest
     needs: linter-execution
-    strategy:
-      matrix:
-        node-version: [16, 18, 20] # Se ejecutará en las tres versiones
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-
-      - name: Setting node version
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
 
       - name: Install Jest
         run: npm install jest --legacy-peer-deps
@@ -72,3 +63,4 @@ jobs:
         uses: adeloyedeji/github-actions-hello@v1.0
         with:
           who-to-greet: "2DAW Edgar Montagud"
+
