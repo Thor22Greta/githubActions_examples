@@ -53,7 +53,9 @@ jobs:
 
       - name: Fails
         if: ${{ steps.jest.outcome != 'success' }}
-        run: echo "Se ha producido un error" && exit 1
+        run: |
+          echo "Se ha producido un error"
+          exit 1
 
   environment_test_execution:
     runs-on: ubuntu-latest
@@ -63,4 +65,3 @@ jobs:
         uses: adeloyedeji/github-actions-hello@v1.0
         with:
           who-to-greet: "2DAW Edgar Montagud"
-
