@@ -1,21 +1,28 @@
 name: Main Workflow
 
-# S'executarà en fer push a la branca "nodejs_test_job"
+# S'executarà en fer push a la branca "nodejs_nodeversions_job"
 on:
   push:
     branches:
-      - nodejs_test_job
+      - nodejs_nodeversions_job
 
 jobs:
   linter-execution:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16, 18, 20]
 
     steps:
       # Step 1: Checkout del codi font
       - name: Checkout code
         uses: actions/checkout@v4
-
-      # Step 2: Executar el linter
+      # Step 2: Setup node version
+      - name: Setting node version
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      # Step 3: Executar el linter
       - name: Linter execution
         uses: github/super-linter@v4
         env:
@@ -26,8 +33,8 @@ jobs:
           VALIDATE_JAVASCRIPT_ES: true
 
   test-execution:
-    needs: linter-execution
     runs-on: ubuntu-latest
+    needs: linter-execution
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
