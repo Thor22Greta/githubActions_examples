@@ -48,9 +48,6 @@ jobs:
         id: jest
         continue-on-error: true
 
-      - name: Debug Jest Outcome
-        run: echo "Jest outcome: ${{ steps.jest.outcome }}"
-
       - name: Fails
         if: ${{ steps.jest.outcome != 'success' }}
         run: |
