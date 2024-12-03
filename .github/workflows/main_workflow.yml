@@ -29,13 +29,17 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           FILTER_REGEX_INCLUDE: ".*\\.(js|ts|json)$"
           FILTER_REGEX_EXCLUDE: "node_modules/|dist/|coverage/"
-          LINTER_RULES_PATH: ./
+          LINTER_RULES_PATH: ./ 
           JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.json
           LOG_LEVEL: warn
 
   test-execution:
     runs-on: ubuntu-latest
     needs: linter-execution
+    strategy:
+      matrix:
+        node-version: [16, 18, 20] # Se ejecutará en las tres versiones
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -43,7 +47,7 @@ jobs:
       - name: Setting node version
         uses: actions/setup-node@v3
         with:
-          node-version: 20 # Usamos la última versión para ejecutar los tests
+          node-version: ${{ matrix.node-version }}
 
       - name: Install Jest
         run: npm install jest --legacy-peer-deps
@@ -53,8 +57,11 @@ jobs:
         id: jest
         continue-on-error: true
 
+      - name: Debug Jest Outcome
+        run: echo "Jest outcome: ${{ steps.jest.outcome }}"
+
       - name: Fails
-        if: ${{ failure() }}
+        if: ${{ steps.jest.outcome != 'success' }}
         run: echo "Se ha producido un error" && exit 1
 
   environment_test_execution:
@@ -65,4 +72,3 @@ jobs:
         uses: adeloyedeji/github-actions-hello@v1.0
         with:
           who-to-greet: "2DAW Edgar Montagud"
-
