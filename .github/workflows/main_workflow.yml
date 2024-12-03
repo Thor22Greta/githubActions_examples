@@ -1,6 +1,5 @@
 name: Main Workflow
 
-# S'executarà en fer push a la branca "nodejs_test_error_job"
 on:
   push:
     branches:
@@ -14,15 +13,14 @@ jobs:
         node-version: [16, 18, 20]
 
     steps:
-      # Step 1: Checkout del codi font
       - name: Checkout code
         uses: actions/checkout@v4
-      # Step 2: Setup node version
+
       - name: Setting node version
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      # Step 3: Executar el linter
+
       - name: Linter execution
         uses: github/super-linter@v4
         env:
@@ -48,7 +46,7 @@ jobs:
         continue-on-error: true
 
       - name: Fails
-        if: steps.jest.outcome != 'succes'
+        if: ${{ failure() }}
         run: echo "Se ha producido un error" && exit 1
 
   environment_test_execution:
